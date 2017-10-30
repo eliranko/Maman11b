@@ -18,6 +18,10 @@ public class Gambler {
         cards = new ArrayList<>();
     }
     
+    public void clean() {
+        cards.clear();
+    }
+    
     public void addCard(Card card) {
         cards.add(card);
     }

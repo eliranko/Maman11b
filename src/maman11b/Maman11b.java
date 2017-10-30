@@ -23,37 +23,95 @@ public class Maman11b {
         Gambler user = new Gambler();
         Gambler pc = new Gambler();
         
-        // Deal user
-        user.addCard(deck.getNextCard());
-        user.addCard(deck.getNextCard());
-        int reply;
+        int replay;
         do {
+            user.clean();
+            pc.clean();
+            dealUser(deck, user);
+            dealPc(deck, pc);
+            String message = "Your cards are: " + 
+                    getStringRepresentationOfCards(user.getCards()) + 
+                    " and they total " + user.getHandValue() + " points.\n" + 
+                    "The AI's cards are: " + 
+                    getStringRepresentationOfCards(pc.getCards()) + 
+                    " and they total " + pc.getHandValue() + " points.\n" + 
+                    getWinningMessage(user.getHandValue(), pc.getHandValue()) +
+                    "\nWould you like to start another match?";
+                    
+            replay = JOptionPane.showConfirmDialog(null, message, 
+                    "End of match!", JOptionPane.YES_NO_OPTION,
+                    JOptionPane.QUESTION_MESSAGE);
+        } while(replay == JOptionPane.YES_OPTION);
+    }
+    
+    private static void dealUser(Deck deck, Gambler user) {
+        user.addCard(deck.getNextCard());
+        user.addCard(deck.getNextCard());
+        int reply = JOptionPane.YES_OPTION;
+        while(reply == JOptionPane.YES_OPTION && user.getHandValue() < 21) {
             // Build message
             String message = "Your cards are: " + 
                     getStringRepresentationOfCards(user.getCards()) +
-                    ". Would you like to draw?";
+                    ". \nWould you like to draw?";
             
             //Ask user
             reply = JOptionPane.showConfirmDialog(null, message, "21", 
-                    JOptionPane.QUESTION_MESSAGE, JOptionPane.YES_NO_OPTION);
+                    JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE);
             
             if(reply == JOptionPane.YES_OPTION) {
                 user.addCard(deck.getNextCard());
             }
-            
-        } while(reply == JOptionPane.YES_OPTION);
+        }
+        
+        if(user.getHandValue() >= 21) {
+            JOptionPane.showMessageDialog(null, "Your cards are: " + 
+                    getStringRepresentationOfCards(user.getCards()) +
+                    ".\nYou cannot draw more cards.");
+        }
+    }
+    
+    private static void dealPc(Deck deck, Gambler pc) {
+        pc.addCard(deck.getNextCard());
+        pc.addCard(deck.getNextCard());
+        while(pc.getHandValue() < 18) {
+            pc.addCard(deck.getNextCard());
+        }
+    }
+    
+    private static String getWinningMessage(int userValue, int pcValue) {
+        if(userValue > 21) {
+            userValue = -1;
+        }
+        if(pcValue > 21) {
+            pcValue = -1;
+        }
+        
+        String message;
+        if(userValue > pcValue) {
+            message = "You won!";
+        }
+        else if(pcValue > userValue) {
+            message = "You lost!";
+        }
+        else if(pcValue == userValue && pcValue > 0) {
+            message = "It's a tie!";
+        }
+        else {
+            message = "You both lost!";
+        }
+        
+        return message;
     }
     
     private static String getStringRepresentationOfCards(ArrayList<Card> cards) {
-        String value = "";
+        String value = "(";
         for(int i = 0; i < cards.size(); i++) {
-            if(i != 0 && i != cards.size() - 1) {
-                value += ",";
-            }
-            
             value += cards.get(i);
+            if(i != cards.size() - 1) {
+                value += ", ";
+            }
         }
         
-        return value;
+        return value + ")";
     }
 }
