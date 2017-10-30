@@ -24,6 +24,10 @@ public class Card {
         return cardRank.getValue();
     }
 
+    public CardRank getRank() {
+        return cardRank;
+    }
+    
     @Override
     public int hashCode() {
         int hash = 5;
@@ -44,6 +48,11 @@ public class Card {
         Card other = (Card) obj;
         
         return this.cardRank == other.cardRank && this.cardSuit == other.cardSuit;
+    }
+
+    @Override
+    public String toString() {
+        return cardRank.name() + "_" + cardSuit.name();
     }
     
     
